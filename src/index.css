@@ -1,3 +1,11 @@
+:root {
+  /* TODO: move these to ./components/backlog/index.css */
+  --grid-margin: 8px;
+  --border-radius: 2px;
+  --scroll-container-height: 250px;
+  --item-image-size: 40px;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

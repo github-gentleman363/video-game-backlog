@@ -1,26 +1,15 @@
 import React from 'react';
 import SearchInput from "./components/SearchInput";
+import BoardContainer from "./components/backlog";
 
 import './App.css';
 import 'semantic-ui-css/semantic.min.css';
 
 function App() {
-    // const [toDoItems, setToDoItems] = useState([]);
-
-    // useEffect(() => {
-    //     DB.ref("/backlog/yjw9012/TO_DO").on("value", (snapshot) => {
-    //         if (snapshot.val())
-    //             setToDoItems(Object.values(snapshot.val()));
-    //     });
-    // }, []);
-
-    // const addData = () => {
-    //     DB.ref("/backlog/yjw9012/TO_DO").push(`${Math.random()}`);
-    // };
-
     return (
         <div className="App">
             <SearchInput />
+            <BoardContainer />
         </div>
     );
 }

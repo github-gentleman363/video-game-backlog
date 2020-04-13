@@ -1,0 +1,152 @@
+.board-parent-container {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.board-container {
+    min-height: 100vh;
+    /* like display:flex but will allow bleeding over the window width */
+    min-width: 100vw;
+    display: inline-flex;
+}
+
+.column-container {
+    margin: var(--grid-margin);
+    display: flex;
+    flex-direction: column;
+}
+
+.column-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    transition: background-color 0.2s ease;
+}
+
+.column-header:hover {
+    /*background-color: #E3FCEF;*/
+}
+
+.column-title, .inner-list-title {
+    padding: var(--grid-margin);
+    transition: background-color ease 0.2s;
+    flex-grow: 1;
+    user-select: none;
+    position: relative;
+}
+
+.list-wrapper {
+    display: flex;
+    flex-direction: column;
+    padding: var(--grid-margin);
+    border: var(--grid-margin);
+    padding-bottom: 0;
+    transition: background-color 0.2s ease, opacity 0.1s ease;
+    user-select: none;
+    width: 250px;
+}
+
+.inner-list-drop-zone {
+    /* stop the list collapsing when empty */
+    min-height: var(--scroll-container-height);
+    /*
+      not relying on the items for a margin-bottom
+      as it will collapse when the list is empty
+    */
+    padding-bottom: var(--grid-margin);
+}
+
+.list-scroll-container {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: var(--scroll-container-height);
+}
+
+.item-container {
+    border-radius: var(--border-radius);
+    border: 2px solid transparent;
+    box-sizing: border-box;
+    padding: var(--grid-margin);
+    min-height: var(--item-image-size);
+    margin-bottom: var(--grid-margin);
+    user-select: none;
+    display: flex;
+}
+
+.item-container:hover,
+.item-container:active {
+     /*color: ${colors.N900};*/
+     text-decoration: none;
+ }
+
+.item-container:focus {
+     outline: none;
+     /*border-color: ${props => props.colors.hard};*/
+     box-shadow: none;
+ }
+
+
+.clone-badge {
+    /*background: ${colors.G100};*/
+    bottom: calc(var(--grid-margin) / 2);
+    border: 2px solid papayawhip;
+    border-radius: 50%;
+    box-sizing: border-box;
+    font-size: 10px;
+    position: absolute;
+    right: calc(var(--item-image-size) * (-1 / 3));
+    top: calc(var(--item-image-size) * (-1 / 3));
+    transform: rotate(40deg);
+    height: var(--item-image-size);
+    width: var(--item-image-size);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.avatar {
+    width: var(--item-image-size);
+    height: var(--item-image-size);
+    border-radius: 50%;
+    margin-right: var(--grid-margin);
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+.item-content {
+    /* flex child */
+    flex-grow: 1;
+    /*
+      Needed to wrap text in ie11
+      https://stackoverflow.com/questions/35111090/why-ie11-doesnt-wrap-the-text-in-flexbox
+    */
+    flex-basis: 100%;
+    /* flex parent */
+    display: flex;
+    flex-direction: column;
+}
+
+.item-footer {
+    display: flex;
+    margin-top: var(--grid-margin);
+    align-items: center;
+}
+
+.quote-id {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0;
+    font-weight: normal;
+    text-overflow: ellipsis;
+    text-align: right;
+}
+
+.author {
+    flex-grow: 0;
+    margin: 0;
+    border-radius: var(--border-radius);
+    font-weight: normal;
+    padding: calc(var(--grid-margin) / 2);
+}

@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import { Search } from 'semantic-ui-react';
 import search from "../service/apicalypse";
 import useDebounce from "../hooks/useDebounce";
+import DB from "../service/firebase";
 
 const initialState = { isLoading: false, results: [], value: '' };
 
@@ -29,7 +30,13 @@ const SearchInput = () => {
         [debouncedSearchTerm]
     );
 
-    const handleResultSelect = (e, { result }) => setValue(initialState.value);
+    const handleResultSelect = (e, { result }) => {
+        setValue(initialState.value);
+        setResults(initialState.results);
+        setIsLoading(initialState.isLoading);
+
+        DB.ref("/backlog/yjw9012/TO_DO").push(result.title);
+    };
 
     const handleSearchChange = (e, { value }) => setValue(value);
 
