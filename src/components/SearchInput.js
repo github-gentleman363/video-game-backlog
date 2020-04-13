@@ -14,13 +14,14 @@ const SearchInput = () => {
 
     useEffect(
         () => {
-            // Make sure we have a value (user has entered something in input)
-            if (debouncedSearchTerm?.trim?.()) {
+
+            // match IGDB website behavior
+            if (debouncedSearchTerm?.trim?.()?.length >= 3) {
                 setIsLoading(true);
                 search(debouncedSearchTerm.trim()).then(results => {
                     setIsLoading(false);
                     setResults(results.map(({slug, name, summary, total_rating}) => ({
-                        id: slug, title: name, description: summary, price: `${total_rating}`
+                        id: slug, title: name, description: summary, price: total_rating != null ? `${Math.round(total_rating)}` : ""
                     })));
                 });
             } else {
@@ -50,6 +51,7 @@ const SearchInput = () => {
             input={{ fluid: true }}
             fluid       // have its results take up the width of its container.
             showNoResults
+            placeholder="type at least 3 characters to search"
         />
     );
 };
