@@ -1,0 +1,1 @@
+export const getImageUrl = (imageId, size = "cover_small") => `https://images.igdb.com/igdb/image/upload/t_${size}/${imageId}.jpg`;

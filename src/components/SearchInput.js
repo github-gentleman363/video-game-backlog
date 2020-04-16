@@ -1,8 +1,21 @@
 import React, {useState, useEffect} from "react";
-import { Search } from 'semantic-ui-react';
-import search from "../service/apicalypse";
+import {Search, Image, Icon} from 'semantic-ui-react';
+import {searchGames} from "../service/apicalypse";
 import useDebounce from "../hooks/useDebounce";
-import DB from "../service/firebase";
+import {updateBacklog} from "../service/firebase";
+import {getImageUrl} from "../utils";
+import {BACKLOG_COLUMN_TYPE} from "../constants";
+
+const SearchResultEntry = ({title, imgUrl}) => (
+    <div>
+        {
+            imgUrl &&
+            <Image src={imgUrl} rounded inline style={{width: "35px", height: "35px", float: "none", marginRight: "12px"}} />
+        }
+        <span>{title}</span>
+        <Icon name="add circle" size="big" style={{float: "right"}} />
+    </div>
+);
 
 const initialState = { isLoading: false, results: [], value: '' };
 
@@ -14,15 +27,17 @@ const SearchInput = () => {
 
     useEffect(
         () => {
-
             // match IGDB website behavior
             if (debouncedSearchTerm?.trim?.()?.length >= 3) {
                 setIsLoading(true);
-                search(debouncedSearchTerm.trim()).then(results => {
+                searchGames(debouncedSearchTerm.trim()).then(games => {
                     setIsLoading(false);
-                    setResults(results.map(({slug, name, summary, total_rating}) => ({
-                        id: slug, title: name, description: summary, price: total_rating != null ? `${Math.round(total_rating)}` : ""
-                    })));
+
+                    const results = games.map(({id, slug, name, summary, total_rating, cover}) => ({
+                        id, slug, title: name, description: summary, price: total_rating != null ? `${Math.round(total_rating)}` : "",
+                        imgUrl: cover?.image_id ? getImageUrl(cover.image_id) : null
+                    }));
+                    setResults(results);
                 });
             } else {
                 setResults(initialState.results);
@@ -36,7 +51,7 @@ const SearchInput = () => {
         setResults(initialState.results);
         setIsLoading(initialState.isLoading);
 
-        DB.ref("/backlog/yjw9012/TO_DO").push(result.title);
+        updateBacklog(BACKLOG_COLUMN_TYPE.TO_DO, result.id, result.slug);
     };
 
     const handleSearchChange = (e, { value }) => setValue(value);
@@ -46,6 +61,7 @@ const SearchInput = () => {
             loading={isLoading}
             onResultSelect={handleResultSelect}
             onSearchChange={handleSearchChange}
+            resultRenderer={SearchResultEntry}
             results={results}
             value={value}
             input={{ fluid: true }}

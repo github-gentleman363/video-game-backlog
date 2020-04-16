@@ -2,11 +2,13 @@ import apicalypse from 'apicalypse';
 
 const API_KEY = "d07b3e3889ab72eaa8c31cec190f4384";
 
+const BASE_URL = "https://api-v3.igdb.com";
+
 const REQUEST_OPTIONS = Object.freeze({
     // url: "/games",
     // queryMethod: 'body',
     method: 'post', // The default is `get`
-    baseURL: 'https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com',
+    baseURL: `https://cors-anywhere.herokuapp.com/${BASE_URL}`,
     headers: {
         'Accept': 'application/json',
         'user-key': API_KEY
@@ -19,21 +21,16 @@ const REQUEST_OPTIONS = Object.freeze({
     // }
 });
 
-const FIELDS = Object.freeze(["name", "summary", "slug", "total_rating", "total_rating_count"]);
+const LIMIT = 10;
+const FIELDS = Object.freeze(["name", "summary", "slug", "total_rating", "total_rating_count", "cover.*"]);
 
-async function search (val)  {
-    if (!val?.trim?.())     return;
-
+export async function searchGames (val)  {
     try {
-        console.log(`making a request for "${val}"`)
-        const response = await apicalypse(REQUEST_OPTIONS).fields(FIELDS).search(val).request("/games");
+        const response = await apicalypse(REQUEST_OPTIONS).fields(FIELDS).limit(LIMIT).search(val).request("/games");
         // This is an axios response: https://github.com/axios/axios#response-schema
-        // console.log(response.data)
         return response?.data;
     } catch (err) {
         console.error(err);
         return err;
     }
 }
-
-export default search;

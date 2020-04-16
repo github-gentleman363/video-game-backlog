@@ -10,13 +10,13 @@ const BoardContainer = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        setIsLoading(true);
-        DB.ref("/backlog/yjw9012/TO_DO").on("value", (snapshot) => {
-            if (snapshot.val()) {
-                setToDoItems(Object.values(snapshot.val()));
-            }
-            setIsLoading(false);
-        });
+        // setIsLoading(true);
+        // DB.ref("/backlog/yjw9012/TO_DO").on("value", (snapshot) => {
+        //     if (snapshot.val()) {
+        //         setToDoItems(Object.values(snapshot.val()));
+        //     }
+        //     setIsLoading(false);
+        // });
         // TODO: clean up
     }, []);
 

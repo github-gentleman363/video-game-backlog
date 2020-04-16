@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import {BACKLOG_COLUMN_TYPE} from "../constants";
 
 // Your web app's Firebase configuration
 const firebaseConfig = Object.freeze({
@@ -14,4 +15,12 @@ const firebaseConfig = Object.freeze({
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-export default firebase.database();
+const DB = firebase.database();
+
+const userId = "yjw9012";
+
+const getDBRefPath = (type = "TO_DO", key) => `/backlog/${userId}/${type}/${key}`;
+
+export const updateBacklog = (type, key, val) => {
+    DB.ref(getDBRefPath(BACKLOG_COLUMN_TYPE.TO_DO, key)).set(val);
+};
