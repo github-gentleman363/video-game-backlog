@@ -9,10 +9,10 @@ export default class Board extends Component{
         isCombineEnabled: false,
     };
 
-    state = {
-        columns: this.props.initial,
-        ordered: Object.keys(this.props.initial),
-    };
+    // state = {
+    //     columns: this.props.initial,
+    //     ordered: Object.keys(this.props.initial),
+    // };
 
     onDragEnd = (result) => {
         if (result.combine) {
@@ -77,14 +77,16 @@ export default class Board extends Component{
     };
 
     render() {
-        const columns = this.state.columns;
-        const ordered = this.state.ordered;
         const {
+            data,
             containerHeight,
             useClone,
             isCombineEnabled,
             withScrollableColumns,
         } = this.props;
+
+        const columns = data;
+        const ordered = Object.keys(data);
 
         const board = (
             <Droppable

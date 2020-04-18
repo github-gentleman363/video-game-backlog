@@ -34,3 +34,15 @@ export async function searchGames (val)  {
         return err;
     }
 }
+
+export async function getGames (gameIds = []) {
+    try {
+        // TODO: what should be the limit?
+        const response = await apicalypse(REQUEST_OPTIONS).fields(FIELDS).where(`id = (${gameIds.join(", ")})`).request("/games");
+        // This is an axios response: https://github.com/axios/axios#response-schema
+        return response?.data;
+    } catch (err) {
+        console.error(err);
+        return err;
+    }
+}

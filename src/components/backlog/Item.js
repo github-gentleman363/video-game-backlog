@@ -81,7 +81,7 @@ function Item(props) {
                         }}>
                         {quote.author.name}
                     </small>
-                    <small className="quote-id">id:{quote.id}</small>
+                    <small className="quote-id">{quote.id}</small>
                 </div>
             </div>
         </a>

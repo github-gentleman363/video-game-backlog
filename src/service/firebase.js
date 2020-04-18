@@ -19,8 +19,14 @@ const DB = firebase.database();
 
 const userId = "yjw9012";
 
-const getDBRefPath = (type = "TO_DO", key) => `/backlog/${userId}/${type}/${key}`;
+const getDBRefPath = (type = BACKLOG_COLUMN_TYPE.TO_DO, key) => `/backlog/${userId}/${type}${key ? `/${key}` : ""}`;
 
 export const updateBacklog = (type, key, val) => {
-    DB.ref(getDBRefPath(BACKLOG_COLUMN_TYPE.TO_DO, key)).set(val);
+    DB.ref(getDBRefPath(type, key)).set(val);
+};
+
+export const listenToBacklog = (type, callback) => {
+    DB.ref(getDBRefPath(type)).on("value", (snapshot) => {
+        callback(snapshot.val());
+    });
 };
