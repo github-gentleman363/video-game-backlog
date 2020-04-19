@@ -16,15 +16,15 @@ export const getBackgroundColor = (
     return colors.N30;
 };
 
-const InnerQuoteList = React.memo(function InnerQuoteList(props) {
-    return props.quotes?.map((quote, index) => (
-        <Draggable key={quote.id} draggableId={quote.id} index={index}>
+const InnerGameList = ({ data = [] }) => {
+    return data.map((datum, index) => (
+        <Draggable key={datum.id} draggableId={datum.id} index={index}>
             {(
                 dragProvided, dragSnapshot,
             ) => (
                 <Item
-                    key={quote.id}
-                    quote={quote}
+                    key={datum.id}
+                    data={datum}
                     isDragging={dragSnapshot.isDragging}
                     isGroupedOver={Boolean(dragSnapshot.combineTargetFor)}
                     provided={dragProvided}
@@ -32,24 +32,23 @@ const InnerQuoteList = React.memo(function InnerQuoteList(props) {
             )}
         </Draggable>
     ));
-});
+};
 
 function InnerList(props) {
-    const { quotes, dropProvided } = props;
-    const title = props.title ? <h4 className="inner-list-title">{props.title}</h4> : null;
+    const { data, dropProvided } = props;
 
     return (
         <div>
-            {title}
+            {props.title ? <h4 className="inner-list-title">{props.title}</h4> : null}
             <div ref={dropProvided.innerRef} className="inner-list-drop-zone">
-                <InnerQuoteList quotes={quotes} />
+                <InnerGameList data={data} />
                 {dropProvided.placeholder}
             </div>
         </div>
     );
 }
 
-export default function QuoteList(props) {
+export default function List(props) {
     const {
         ignoreContainerClipping,
         internalScroll,
@@ -59,7 +58,7 @@ export default function QuoteList(props) {
         listId = 'LIST',
         listType,
         style,
-        quotes,
+        data,
         title,
         useClone,
     } = props;
@@ -67,7 +66,7 @@ export default function QuoteList(props) {
     return (
         <Droppable
             droppableId={listId}
-            type={listType}
+            type={listType}     // TODO
             ignoreContainerClipping={ignoreContainerClipping}
             isDropDisabled={isDropDisabled}
             isCombineEnabled={isCombineEnabled}
@@ -75,7 +74,7 @@ export default function QuoteList(props) {
                 useClone
                     ? (provided, snapshot, descriptor) => (
                         <Item
-                            quote={quotes[descriptor.source.index]}
+                            data={data[descriptor.source.index]}
                             provided={provided}
                             isDragging={snapshot.isDragging}
                             isClone
@@ -99,14 +98,14 @@ export default function QuoteList(props) {
                     {internalScroll ? (
                         <div style={scrollContainerStyle} className="list-scroll-container">
                             <InnerList
-                                quotes={quotes}
+                                data={data}
                                 title={title}
                                 dropProvided={dropProvided}
                             />
                         </div>
                     ) : (
                         <InnerList
-                            quotes={quotes}
+                            data={data}
                             title={title}
                             dropProvided={dropProvided}
                         />

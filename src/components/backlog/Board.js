@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Column from './Column';
-import reorder, { reorderQuoteMap } from './reorder';
+import {BACKLOG_COLUMN_TYPE_TO_DISPLAY_LABEL} from "../../constants";
 
 export default class Board extends Component{
     /* eslint-disable react/sort-comp */
@@ -15,25 +15,6 @@ export default class Board extends Component{
     // };
 
     onDragEnd = (result) => {
-        if (result.combine) {
-            if (result.type === 'COLUMN') {
-                const shallow = [...this.state.ordered];
-                shallow.splice(result.source.index, 1);
-                this.setState({ ordered: shallow });
-                return;
-            }
-
-            const column = this.state.columns[result.source.droppableId];
-            const withQuoteRemoved = [...column];
-            withQuoteRemoved.splice(result.source.index, 1);
-            const columns = {
-                ...this.state.columns,
-                [result.source.droppableId]: withQuoteRemoved,
-            };
-            this.setState({ columns });
-            return;
-        }
-
         // dropped nowhere
         if (!result.destination) {
             return;
@@ -51,29 +32,29 @@ export default class Board extends Component{
         }
 
         // reordering column
-        if (result.type === 'COLUMN') {
-            const ordered = reorder(
-                this.state.ordered,
-                source.index,
-                destination.index,
-            );
+        // if (result.type === 'COLUMN') {
+        //     const ordered = reorder(
+        //         this.state.ordered,
+        //         source.index,
+        //         destination.index,
+        //     );
+        //
+        //     this.setState({
+        //         ordered,
+        //     });
+        //
+        //     return;
+        // }
 
-            this.setState({
-                ordered,
-            });
+        // const data = reorderQuoteMap({
+        //     quoteMap: this.state.columns,
+        //     source,
+        //     destination,
+        // });
 
-            return;
-        }
-
-        const data = reorderQuoteMap({
-            quoteMap: this.state.columns,
-            source,
-            destination,
-        });
-
-        this.setState({
-            columns: data.quoteMap,
-        });
+        // this.setState({
+        //     columns: data.quoteMap,
+        // });
     };
 
     render() {
@@ -106,9 +87,10 @@ export default class Board extends Component{
                         {ordered.map((key, index) => (
                             <Column
                                 key={key}
+                                id={key}
                                 index={index}
-                                title={key}
-                                quotes={columns[key]}
+                                title={BACKLOG_COLUMN_TYPE_TO_DISPLAY_LABEL[key]}
+                                data={columns[key]}
                                 isScrollable={withScrollableColumns}
                                 isCombineEnabled={isCombineEnabled}
                                 useClone={useClone}
@@ -121,15 +103,13 @@ export default class Board extends Component{
         );
 
         return (
-            <React.Fragment>
-                <DragDropContext onDragEnd={this.onDragEnd}>
-                    {containerHeight ? (
-                        <div className="board-parent-container" style={{height: containerHeight}}>{board}</div>
-                    ) : (
-                        board
-                    )}
-                </DragDropContext>
-            </React.Fragment>
+            <DragDropContext onDragEnd={this.onDragEnd}>
+                {containerHeight ? (
+                    <div className="board-parent-container" style={{height: containerHeight}}>{board}</div>
+                ) : (
+                    board
+                )}
+            </DragDropContext>
         );
     }
 }

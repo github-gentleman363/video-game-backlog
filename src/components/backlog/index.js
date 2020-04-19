@@ -1,36 +1,32 @@
 import React, {useState, useEffect} from "react";
 import Board from "./Board";
-import { authorQuoteMap } from './data';
 import {listenToBacklog} from "../../service/firebase";
 import {getGames} from "../../service/apicalypse";
+import {getImageUrl} from "../../utils";
+import {BACKLOG_COLUMN_TYPE} from "../../constants";
+import {colors} from "@atlaskit/theme";
 
 import "./index.css";
-import {getImageUrl} from "../../utils";
+
+const initialData = Object.freeze({ [BACKLOG_COLUMN_TYPE.TO_DO]: [], [BACKLOG_COLUMN_TYPE.IN_PROGRESS]: [], [BACKLOG_COLUMN_TYPE.DONE]: [] });
 
 const BoardContainer = () => {
-    const [data, setData] = useState(authorQuoteMap);
+    const [data, setData] = useState(initialData);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         listenToBacklog(undefined, (gameIdToSlugMap) => {
             getGames(Object.keys(gameIdToSlugMap)).then((games) => {
-                const columnData = games.map(({ id, slug, name, total_rating, cover = {} }) => {
-                    return {
-                        id: total_rating ? Math.round(total_rating) : null,
-                        content: name,
-                        author: {
-                            id: 2020,
-                            name: "PS4",
-                            avatarUrl: getImageUrl(cover.image_id),
-                            "colors": {
-                                "soft": "#FFFAE6",
-                                "hard": "rgba(9, 30, 66, 0.71)"
-                            }
-                        }
-                    };
-                });
 
-                setData({ ...data, "TO DO": columnData });
+                console.log(games)
+
+                const columnData = games.map((game) => ({
+                    ...game,
+                    coverImageUrl: getImageUrl(game.cover?.image_id),
+                    colors: { soft: colors.Y50, hard: colors.N400A }
+                }));
+
+                setData({ ...data, [BACKLOG_COLUMN_TYPE.TO_DO]: columnData });
             });
         });
 
