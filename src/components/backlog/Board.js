@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { DragDropContext } from "react-beautiful-dnd";
 import Column from './Column';
 import {reorderQuoteMap} from "./reorder";
 import {BACKLOG_COLUMN_TYPE_TO_DISPLAY_LABEL} from "../../constants";
@@ -55,36 +55,19 @@ export default class Board extends Component{
         const ordered = Object.keys(data);
 
         const board = (
-            <Droppable
-                droppableId="board"
-                type="COLUMN"
-                direction="horizontal"
-                ignoreContainerClipping={Boolean(containerHeight)}
-                isCombineEnabled={isCombineEnabled}
-            >
-                {(provided) => (
-                    <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className="board-container"
-                        // style={{backgroundColor: colors.B100}}
-                    >
-                        {ordered.map((key, index) => (
-                            <Column
-                                key={key}
-                                id={key}
-                                index={index}
-                                title={BACKLOG_COLUMN_TYPE_TO_DISPLAY_LABEL[key]}
-                                data={columns[key]}
-                                isScrollable={withScrollableColumns}
-                                isCombineEnabled={isCombineEnabled}
-                                useClone={useClone}
-                            />
-                        ))}
-                        {provided.placeholder}
-                    </div>
-                )}
-            </Droppable>
+            <div className="board-container">
+                {ordered.map((key) => (
+                    <Column
+                        key={key}
+                        id={key}
+                        title={BACKLOG_COLUMN_TYPE_TO_DISPLAY_LABEL[key]}
+                        data={columns[key]}
+                        isScrollable={withScrollableColumns}
+                        isCombineEnabled={isCombineEnabled}
+                        useClone={useClone}
+                    />
+                ))}
+            </div>
         );
 
         return (
