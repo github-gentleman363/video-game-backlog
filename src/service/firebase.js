@@ -1,4 +1,5 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import "firebase/database";
 import {BACKLOG_COLUMN_TYPE} from "../constants";
 
 // Your web app's Firebase configuration
@@ -19,14 +20,8 @@ const DB = firebase.database();
 
 const userId = "yjw9012";
 
-const getDBRefPath = (type = BACKLOG_COLUMN_TYPE.TO_DO, key) => `/backlog/${userId}/${type}${key ? `/${key}` : ""}`;
+const getDBRefPath = () => `/${userId}/`;
 
-export const updateBacklog = (type, key, val) => {
-    DB.ref(getDBRefPath(type, key)).set(val);
-};
+export const updateBacklog = (backlog) => DB.ref(getDBRefPath()).set(backlog);
 
-export const listenToBacklog = (type, callback) => {
-    DB.ref(getDBRefPath(type)).on("value", (snapshot) => {
-        callback(snapshot.val());
-    });
-};
+export const listenToBacklog = () => DB.ref(getDBRefPath()).once("value").then((snapshot) => snapshot?.val());

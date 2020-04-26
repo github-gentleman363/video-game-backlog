@@ -1,5 +1,29 @@
 import React from 'react';
+import { Button, Header, Image, Modal, Placeholder } from 'semantic-ui-react'
 import { colors } from '@atlaskit/theme';
+
+const PlaceholderExample = () => (
+    <Placeholder>
+        <Placeholder.Header image>
+            <Placeholder.Line />
+            <Placeholder.Line />
+        </Placeholder.Header>
+        <Placeholder.Paragraph>
+            <Placeholder.Line />
+            <Placeholder.Line />
+            <Placeholder.Line />
+        </Placeholder.Paragraph>
+    </Placeholder>
+);
+
+const ModalExample = ({title}) => (
+    <Modal trigger={<Button>See Details</Button>}>
+        <Modal.Header>{title}</Modal.Header>
+        <Modal.Content image>
+            <PlaceholderExample />
+        </Modal.Content>
+    </Modal>
+)
 
 const getBackgroundColor = (
     isDragging,
@@ -62,6 +86,7 @@ function Item({ data, isDragging, isGroupedOver, provided, style, isClone, index
             {isClone ? <div className="clone-badge">Clone</div> : null}
             <div className="item-content">
                 <div>{data.name}</div>
+                <ModalExample title={data.name} />
                 <div className="item-footer">
                     {/*<small*/}
                     {/*    className="author"*/}

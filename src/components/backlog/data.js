@@ -115,8 +115,9 @@ export const quotes = [
     },
 ];
 
-const getByAuthor = (author, items) =>
-    items.filter((quote) => quote.author === author);
+const getByAuthor = (author, items) => items
+    .filter((quote) => quote.author === author)
+    .map(({id, content, author}) => ({ id, name: content, authorId: author.id, coverImageUrl: author.avatarUrl, colors: author.colors }));
 
 export const authorQuoteMap = authors.reduce(
     (previous, author) => ({
