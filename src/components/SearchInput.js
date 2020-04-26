@@ -63,7 +63,7 @@ const SearchInput = ({onSelect}) => {
                     input={{ fluid: true }}
                     showNoResults
                     placeholder="type at least 3 characters to search"
-                    style={{width: "calc(100% - 210px)"}}
+                    style={{width: `calc(100% - ${isLoggedIn == null || isLoggedIn ? 60 : 210}px)`}}
                     fluid
                     disabled={!isLoggedIn}
                 />
