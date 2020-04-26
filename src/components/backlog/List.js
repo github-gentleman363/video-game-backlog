@@ -16,7 +16,7 @@ export const getBackgroundColor = (
     return colors.N30;
 };
 
-const InnerGameList = ({ data = [] }) => {
+const InnerGameList = ({ data }) => {
     return data.map((datum, index) => (
         <Draggable key={datum.id} draggableId={datum.id} index={index}>
             {(
@@ -55,7 +55,7 @@ export default function List(props) {
         scrollContainerStyle,
         isDropDisabled,
         isCombineEnabled,
-        listId = 'LIST',
+        listId,
         listType,
         style,
         data,

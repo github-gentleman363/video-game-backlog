@@ -1,6 +1,6 @@
 import firebase from 'firebase/app';
 import "firebase/database";
-import {BACKLOG_COLUMN_TYPE} from "../constants";
+import {BACKLOG_COLUMN_TYPE_DB_KEY_MAP} from "../constants";
 
 // Your web app's Firebase configuration
 const firebaseConfig = Object.freeze({
@@ -22,6 +22,11 @@ const userId = "yjw9012";
 
 const getDBRefPath = () => `/${userId}/`;
 
-export const updateBacklog = (backlog) => DB.ref(getDBRefPath()).set(backlog);
+const convertBacklog = (backlog) => backlog && Object.keys(backlog).reduce((acc, cur) => {
+    acc[BACKLOG_COLUMN_TYPE_DB_KEY_MAP[cur]] = backlog[cur];
+    return acc;
+}, {});
 
-export const listenToBacklog = () => DB.ref(getDBRefPath()).once("value").then((snapshot) => snapshot?.val());
+export const updateBacklog = (backlog) => DB.ref(getDBRefPath()).set(convertBacklog(backlog));
+
+export const listenToBacklog = () => DB.ref(getDBRefPath()).once("value").then((snapshot) => convertBacklog(snapshot?.val()));

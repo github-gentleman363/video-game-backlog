@@ -5,15 +5,17 @@ import {listenToBacklog, updateBacklog} from "./service/firebase";
 import {getGames} from "./service/apicalypse";
 import {getImageUrl} from "./utils";
 import {colors} from "@atlaskit/theme";
-import {BACKLOG_COLUMN_TYPE, PLACEHOLDER_ITEMS_NUM} from "./constants";
+import {BACKLOG_COLUMN_TYPE, PLACEHOLDER_ITEMS} from "./constants";
 
 import './App.css';
 import 'semantic-ui-css/semantic.min.css';
 
+export const AppContext = React.createContext(() => {});
+
 const initialData = Object.freeze({
-    [BACKLOG_COLUMN_TYPE.TO_DO]: Array(PLACEHOLDER_ITEMS_NUM).fill({ isPlaceholder: true }),
-    [BACKLOG_COLUMN_TYPE.IN_PROGRESS]: Array(PLACEHOLDER_ITEMS_NUM).fill({ isPlaceholder: true }),
-    [BACKLOG_COLUMN_TYPE.DONE]: Array(PLACEHOLDER_ITEMS_NUM).fill({ isPlaceholder: true })
+    [BACKLOG_COLUMN_TYPE.TO_DO]: PLACEHOLDER_ITEMS,
+    [BACKLOG_COLUMN_TYPE.IN_PROGRESS]: PLACEHOLDER_ITEMS,
+    [BACKLOG_COLUMN_TYPE.DONE]: PLACEHOLDER_ITEMS
 });
 
 function App() {
@@ -21,48 +23,45 @@ function App() {
     const [backlogData, setBacklogData] = useState(initialData);
     const initialRunRef = useRef(true);
     const initialDataLoadedRef = useRef(false);
-    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        setIsLoading(true);
+
         listenToBacklog().then((backlog) => {
             initialDataLoadedRef.current = true;
 
             if (!backlog) {
-                setIsLoading(false);
+                setBacklogData({
+                    [BACKLOG_COLUMN_TYPE.TO_DO]: [],
+                    [BACKLOG_COLUMN_TYPE.IN_PROGRESS]: [],
+                    [BACKLOG_COLUMN_TYPE.DONE]: []
+                });
                 return;
             }
 
-            const orderToGameIdMap = backlog[BACKLOG_COLUMN_TYPE.TO_DO];
+            const allGameIds = Object.values(backlog).reduce((acc, cur) => acc.concat(Object.values(cur)), []);
 
-            if (!orderToGameIdMap) {
-                setIsLoading(false);
-                return;
-            }
+            getGames(allGameIds).then((games) => {
 
-            getGames(Object.values(orderToGameIdMap)).then((games) => {
-
-                const gameIdToGameMap = games.reduce((acc, {id, ...rest}, idx) => {
+                const gameIdToGameMap = games.reduce((acc, {id, ...rest}) => {
                     acc[id] = rest;
                     return acc;
                 }, {});
 
-                const columnData = Object.values(orderToGameIdMap).map((gameId) => {
-                    const game = gameIdToGameMap[gameId];
-                    return {
-                        id: gameId,
-                        ...game,
-                        coverImageUrl: getImageUrl(game.cover?.image_id),
-                        colors: { soft: colors.Y50, hard: colors.N400A }
-                    };
-                });
+                const newBacklog = Object.keys(backlogData).reduce((acc, cur) => {
+                    const orderToGameIdMap = backlog[cur] || {};
+                    acc[cur] = Object.values(orderToGameIdMap).map((gameId) => {
+                        const game = gameIdToGameMap[gameId];
+                        return {
+                            id: `${gameId}`,
+                            ...game,
+                            coverImageUrl: getImageUrl(game.cover?.image_id),
+                            colors: { soft: colors.Y50, hard: colors.N400A }
+                        };
+                    });
+                    return acc;
+                }, {});
 
-                setBacklogData({
-                    [BACKLOG_COLUMN_TYPE.TO_DO]: columnData,
-                    [BACKLOG_COLUMN_TYPE.IN_PROGRESS]: [],
-                    [BACKLOG_COLUMN_TYPE.DONE]: []
-                });
-                setIsLoading(false);
+                setBacklogData(newBacklog);
             });
         });
 
@@ -103,6 +102,7 @@ function App() {
     const onSearchInputResultSelect = (result) => {
         const newEntry = {
             ...result,
+            id: `${result.id}`,
             coverImageUrl: getImageUrl(result.cover?.image_id),
             colors: { soft: colors.Y50, hard: colors.N400A }
         };
@@ -112,7 +112,9 @@ function App() {
     return (
         <div className="App">
             <SearchInput onSelect={onSearchInputResultSelect} />
-            <BoardContainer data={backlogData} />
+            <AppContext.Provider value={setBacklogData}>
+                <BoardContainer data={backlogData} />
+            </AppContext.Provider>
         </div>
     );
 }

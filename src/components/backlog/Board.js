@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Column from './Column';
+import {reorderQuoteMap} from "./reorder";
 import {BACKLOG_COLUMN_TYPE_TO_DISPLAY_LABEL} from "../../constants";
+import {AppContext} from "../../App";
 
 export default class Board extends Component{
     /* eslint-disable react/sort-comp */
@@ -14,7 +16,7 @@ export default class Board extends Component{
     //     ordered: Object.keys(this.props.initial),
     // };
 
-    onDragEnd = (result) => {
+    onDragEnd = (setBacklogData) => (result) => {
         // dropped nowhere
         if (!result.destination) {
             return;
@@ -31,30 +33,13 @@ export default class Board extends Component{
             return;
         }
 
-        // reordering column
-        // if (result.type === 'COLUMN') {
-        //     const ordered = reorder(
-        //         this.state.ordered,
-        //         source.index,
-        //         destination.index,
-        //     );
-        //
-        //     this.setState({
-        //         ordered,
-        //     });
-        //
-        //     return;
-        // }
+        const data = reorderQuoteMap({
+            quoteMap: this.props.data,
+            source,
+            destination,
+        });
 
-        // const data = reorderQuoteMap({
-        //     quoteMap: this.state.columns,
-        //     source,
-        //     destination,
-        // });
-
-        // this.setState({
-        //     columns: data.quoteMap,
-        // });
+        setBacklogData(data.quoteMap);
     };
 
     render() {
@@ -103,13 +88,19 @@ export default class Board extends Component{
         );
 
         return (
-            <DragDropContext onDragEnd={this.onDragEnd}>
-                {containerHeight ? (
-                    <div className="board-parent-container" style={{height: containerHeight}}>{board}</div>
-                ) : (
-                    board
-                )}
-            </DragDropContext>
+            <AppContext.Consumer>
+                {
+                    setBacklogData => (
+                        <DragDropContext onDragEnd={this.onDragEnd(setBacklogData)}>
+                            {containerHeight ? (
+                                <div className="board-parent-container" style={{height: containerHeight}}>{board}</div>
+                            ) : (
+                                board
+                            )}
+                        </DragDropContext>
+                    )
+                }
+            </AppContext.Consumer>
         );
     }
 }
