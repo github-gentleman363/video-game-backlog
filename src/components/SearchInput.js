@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {Search, Image, Icon} from 'semantic-ui-react';
+import {Search, Image, Icon, Loader} from 'semantic-ui-react';
 import {searchGames} from "../service/apicalypse";
 import useDebounce from "../hooks/useDebounce";
 import {getImageUrl} from "../utils";
@@ -61,7 +61,7 @@ const SearchInput = ({onSelect}) => {
                     results={results}
                     value={value}
                     input={{ fluid: true }}
-                    showNoResults
+                    noResultsMessage={<Loader active inline />}
                     placeholder="type at least 3 characters to search"
                     style={{width: `calc(100% - ${isLoggedIn == null || isLoggedIn ? 60 : 210}px)`}}
                     fluid
