@@ -3,6 +3,7 @@ import {Search, Image, Icon} from 'semantic-ui-react';
 import {searchGames} from "../service/apicalypse";
 import useDebounce from "../hooks/useDebounce";
 import {getImageUrl} from "../utils";
+import {LogInContext} from "../App";
 
 const SearchResultEntry = ({name, cover}) => (
     <div>
@@ -50,18 +51,23 @@ const SearchInput = ({onSelect}) => {
     const handleSearchChange = (e, { value }) => setValue(value);
 
     return (
-        <Search
-            loading={isLoading}
-            onResultSelect={handleResultSelect}
-            onSearchChange={handleSearchChange}
-            resultRenderer={SearchResultEntry}
-            results={results}
-            value={value}
-            input={{ fluid: true }}
-            fluid       // have its results take up the width of its container.
-            showNoResults
-            placeholder="type at least 3 characters to search"
-        />
+        <LogInContext.Consumer>
+            {(isLoggedIn) => (
+                <Search
+                    loading={isLoading}
+                    onResultSelect={handleResultSelect}
+                    onSearchChange={handleSearchChange}
+                    resultRenderer={SearchResultEntry}
+                    results={results}
+                    value={value}
+                    input={{ fluid: true }}
+                    showNoResults
+                    placeholder="type at least 3 characters to search"
+                    style={{width: "calc(100% - 210px)"}}
+                    disabled={!isLoggedIn}
+                />
+            )}
+        </LogInContext.Consumer>
     );
 };
 

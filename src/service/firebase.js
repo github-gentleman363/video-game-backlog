@@ -1,5 +1,6 @@
 import firebase from 'firebase/app';
 import "firebase/database";
+import "firebase/auth";
 import {BACKLOG_COLUMN_TYPE_DB_KEY_MAP} from "../constants";
 
 // Your web app's Firebase configuration
@@ -16,11 +17,23 @@ const firebaseConfig = Object.freeze({
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
+// Configure FirebaseUI.
+export const FIREBASE_UI_CONFIG = {
+    // Popup signin flow rather than redirect flow.
+    signInFlow: 'popup',
+    // We will display Google and Facebook as auth providers.
+    signInOptions: [ firebase.auth.GoogleAuthProvider.PROVIDER_ID ],
+    callbacks: {
+        // Avoid redirects after sign-in.
+        signInSuccessWithAuthResult: () => false
+    }
+};
+
+export const FIREBASE_AUTH = firebase.auth();
+
 const DB = firebase.database();
 
-const userId = "yjw9012";
-
-const getDBRefPath = () => `/${userId}/`;
+const getDBRefPath = () => `/${FIREBASE_AUTH.currentUser.uid}/`;
 
 const convertBacklog = (backlog) => backlog && Object.keys(backlog).reduce((acc, cur) => {
     acc[BACKLOG_COLUMN_TYPE_DB_KEY_MAP[cur]] = backlog[cur];

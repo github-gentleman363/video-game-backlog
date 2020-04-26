@@ -3,7 +3,7 @@ import { DragDropContext } from "react-beautiful-dnd";
 import Column from './Column';
 import {reorderQuoteMap} from "./reorder";
 import {BACKLOG_COLUMN_TYPE_TO_DISPLAY_LABEL} from "../../constants";
-import {AppContext} from "../../App";
+import {BacklogContext} from "../../App";
 
 export default class Board extends Component{
     /* eslint-disable react/sort-comp */
@@ -71,7 +71,7 @@ export default class Board extends Component{
         );
 
         return (
-            <AppContext.Consumer>
+            <BacklogContext.Consumer>
                 {
                     setBacklogData => (
                         <DragDropContext onDragEnd={this.onDragEnd(setBacklogData)}>
@@ -83,7 +83,7 @@ export default class Board extends Component{
                         </DragDropContext>
                     )
                 }
-            </AppContext.Consumer>
+            </BacklogContext.Consumer>
         );
     }
 }

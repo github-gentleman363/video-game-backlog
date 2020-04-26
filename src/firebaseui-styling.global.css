@@ -1,0 +1,11 @@
+#firebaseui_container .firebaseui-idp-list {
+    margin: 0;
+}
+
+#firebaseui_container .firebaseui-idp-list > .firebaseui-list-item {
+    margin: 0;
+}
+
+#firebaseui_container .firebaseui-card-content {
+    padding: 0 8px;
+}

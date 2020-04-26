@@ -5,12 +5,16 @@ import {listenToBacklog, updateBacklog} from "./service/firebase";
 import {getGames} from "./service/apicalypse";
 import {getImageUrl} from "./utils";
 import {colors} from "@atlaskit/theme";
-import {BACKLOG_COLUMN_TYPE, PLACEHOLDER_ITEMS} from "./constants";
+import {BACKLOG_COLUMN_TYPE, BACKLOG_COLUMN_TYPES, PLACEHOLDER_ITEMS} from "./constants";
+import LogIn from "./components/LogIn";
+import useLogIn from "./hooks/useLogIn";
 
 import './App.css';
 import 'semantic-ui-css/semantic.min.css';
+import "./firebaseui-styling.global.css";
 
-export const AppContext = React.createContext(() => {});
+export const BacklogContext = React.createContext(() => {});
+export const LogInContext = React.createContext(null);
 
 const initialData = Object.freeze({
     [BACKLOG_COLUMN_TYPE.TO_DO]: PLACEHOLDER_ITEMS,
@@ -21,10 +25,17 @@ const initialData = Object.freeze({
 function App() {
 
     const [backlogData, setBacklogData] = useState(initialData);
-    const initialRunRef = useRef(true);
+    const isLoggedIn = useLogIn(null);
     const initialDataLoadedRef = useRef(false);
 
     useEffect(() => {
+        if (isLoggedIn == null) return;
+
+        // logged out
+        if (!isLoggedIn) {
+            setBacklogData(initialData);
+            return;
+        }
 
         listenToBacklog().then((backlog) => {
             initialDataLoadedRef.current = true;
@@ -47,7 +58,7 @@ function App() {
                     return acc;
                 }, {});
 
-                const newBacklog = Object.keys(backlogData).reduce((acc, cur) => {
+                const newBacklog = BACKLOG_COLUMN_TYPES.reduce((acc, cur) => {
                     const orderToGameIdMap = backlog[cur] || {};
                     acc[cur] = Object.values(orderToGameIdMap).map((gameId) => {
                         const game = gameIdToGameMap[gameId];
@@ -66,14 +77,13 @@ function App() {
         });
 
         // TODO: detach listeners as a cleanup
-    }, []);
+    }, [isLoggedIn]);
 
     useEffect(() => {
-        if (initialRunRef.current) {
-            initialRunRef.current = false;
+        if (backlogData === initialData) {
             return;
         }
-        
+
         if (initialDataLoadedRef.current) {
             initialDataLoadedRef.current = false;
             return;
@@ -97,7 +107,7 @@ function App() {
         // TODO: handle error
         updateBacklog(newBacklog);
 
-        }, [backlogData]);
+    }, [backlogData]);
 
     const onSearchInputResultSelect = (result) => {
         const newEntry = {
@@ -111,10 +121,15 @@ function App() {
 
     return (
         <div className="App">
-            <SearchInput onSelect={onSearchInputResultSelect} />
-            <AppContext.Provider value={setBacklogData}>
-                <BoardContainer data={backlogData} />
-            </AppContext.Provider>
+            <LogInContext.Provider value={isLoggedIn}>
+                <div style={{display: "flex", justifyContent: "space-between"}}>
+                    <SearchInput onSelect={onSearchInputResultSelect} />
+                    <LogIn />
+                </div>
+                <BacklogContext.Provider value={setBacklogData}>
+                    <BoardContainer data={backlogData} />
+                </BacklogContext.Provider>
+            </LogInContext.Provider>
         </div>
     );
 }

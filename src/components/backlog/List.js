@@ -2,6 +2,7 @@ import React from 'react';
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { colors } from '@atlaskit/theme';
 import Item from './Item';
+import {LogInContext} from "../../App";
 
 export const getBackgroundColor = (
     isDraggingOver,
@@ -16,9 +17,9 @@ export const getBackgroundColor = (
     return colors.N30;
 };
 
-const InnerGameList = ({ data }) => {
+const InnerGameList = ({ data, disabled }) => {
     return data.map((datum, index) => (
-        <Draggable key={datum.id} draggableId={datum.id} index={index}>
+        <Draggable key={datum.id} draggableId={datum.id} index={index} isDragDisabled={disabled}>
             {(
                 dragProvided, dragSnapshot,
             ) => (
@@ -28,6 +29,7 @@ const InnerGameList = ({ data }) => {
                     isDragging={dragSnapshot.isDragging}
                     isGroupedOver={Boolean(dragSnapshot.combineTargetFor)}
                     provided={dragProvided}
+                    disabled={disabled}
                 />
             )}
         </Draggable>
@@ -41,7 +43,9 @@ function InnerList(props) {
         <div>
             {props.title ? <h4 className="inner-list-title">{props.title}</h4> : null}
             <div ref={dropProvided.innerRef} className="inner-list-drop-zone">
-                <InnerGameList data={data} />
+                <LogInContext.Consumer>
+                    {(isLoggedIn) => <InnerGameList data={data} disabled={!isLoggedIn} />}
+                </LogInContext.Consumer>
                 {dropProvided.placeholder}
             </div>
         </div>

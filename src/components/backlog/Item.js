@@ -62,7 +62,11 @@ function getStyle(provided, style) {
 // Need to be super sure we are not relying on PureComponent here for
 // things we should be doing in the selector as we do not know if consumers
 // will be using PureComponent
-function Item({ data, isDragging, isGroupedOver, provided, style, isClone, index }) {
+function Item({ data, isDragging, isGroupedOver, provided, style, isClone, index, disabled }) {
+    const placeholderStyle = {width: "100%"};
+    if (disabled) {
+        placeholderStyle.animation = "none";
+    }
     return (
         <div
             className="item-container"
@@ -85,7 +89,7 @@ function Item({ data, isDragging, isGroupedOver, provided, style, isClone, index
             {
                 data.isPlaceholder
                     ? (
-                        <Placeholder style={{width: "100%"}}>
+                        <Placeholder style={placeholderStyle}>
                             <Placeholder.Header image>
                                 <Placeholder.Line />
                                 <Placeholder.Line />
