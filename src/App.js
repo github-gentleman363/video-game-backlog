@@ -5,12 +5,16 @@ import {listenToBacklog, updateBacklog} from "./service/firebase";
 import {getGames} from "./service/apicalypse";
 import {getImageUrl} from "./utils";
 import {colors} from "@atlaskit/theme";
-import {BACKLOG_COLUMN_TYPE} from "./constants";
+import {BACKLOG_COLUMN_TYPE, PLACEHOLDER_ITEMS_NUM} from "./constants";
 
 import './App.css';
 import 'semantic-ui-css/semantic.min.css';
 
-const initialData = Object.freeze({ [BACKLOG_COLUMN_TYPE.TO_DO]: [], [BACKLOG_COLUMN_TYPE.IN_PROGRESS]: [], [BACKLOG_COLUMN_TYPE.DONE]: [] });
+const initialData = Object.freeze({
+    [BACKLOG_COLUMN_TYPE.TO_DO]: Array(PLACEHOLDER_ITEMS_NUM).fill({ isPlaceholder: true }),
+    [BACKLOG_COLUMN_TYPE.IN_PROGRESS]: Array(PLACEHOLDER_ITEMS_NUM).fill({ isPlaceholder: true }),
+    [BACKLOG_COLUMN_TYPE.DONE]: Array(PLACEHOLDER_ITEMS_NUM).fill({ isPlaceholder: true })
+});
 
 function App() {
 
@@ -53,7 +57,11 @@ function App() {
                     };
                 });
 
-                setBacklogData({ ...backlogData, [BACKLOG_COLUMN_TYPE.TO_DO]: columnData });
+                setBacklogData({
+                    [BACKLOG_COLUMN_TYPE.TO_DO]: columnData,
+                    [BACKLOG_COLUMN_TYPE.IN_PROGRESS]: [],
+                    [BACKLOG_COLUMN_TYPE.DONE]: []
+                });
                 setIsLoading(false);
             });
         });

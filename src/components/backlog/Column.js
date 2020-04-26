@@ -11,7 +11,7 @@ export default class Column extends Component {
                 {(provided, snapshot) => (
                     <div ref={provided.innerRef} {...provided.draggableProps} className="column-container">
                         <div className="column-header" style={{backgroundColor: snapshot.isDragging ? colors.G50 : colors.N30}}>
-                            <h4 className="column-title">{title}</h4>
+                            <h2 className="column-title">{title}</h2>
                         </div>
                         <List
                             listId={id}

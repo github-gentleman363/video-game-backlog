@@ -6,7 +6,7 @@
 .board-container {
     min-height: 100vh;
     /* like display:flex but will allow bleeding over the window width */
-    min-width: 100vw;
+    width: calc(100vw - 36px);  /* Left padding and right padding are 18px each */
     display: inline-flex;
 }
 
@@ -45,7 +45,7 @@
     padding-bottom: 0;
     transition: background-color 0.2s ease, opacity 0.1s ease;
     user-select: none;
-    width: 318px;
+    width: calc((100vw - 36px - 48px) / 3);     /* browser width - 18px (left/right padding of the whole page) * 2 - 8px (side margin of each column) * 6 */
 }
 
 .inner-list-drop-zone {
