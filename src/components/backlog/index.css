@@ -68,7 +68,7 @@
     border-radius: var(--border-radius);
     border: 2px solid transparent;
     box-sizing: border-box;
-    padding: var(--grid-margin);
+    /*padding: var(--grid-margin);*/
     min-height: var(--item-image-size);
     margin-bottom: var(--grid-margin);
     user-select: none;

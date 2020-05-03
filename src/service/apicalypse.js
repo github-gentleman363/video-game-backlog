@@ -22,7 +22,7 @@ const REQUEST_OPTIONS = Object.freeze({
 });
 
 const LIMIT = 10;
-const FIELDS = Object.freeze(["name", "summary", "slug", "total_rating", "total_rating_count", "cover.*"]);
+const FIELDS = Object.freeze(["name", "summary", "slug", "total_rating", "total_rating_count", "cover.*", "first_release_date, platforms.*"]);
 
 export async function searchGames (val)  {
     try {

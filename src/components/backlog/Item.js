@@ -1,6 +1,9 @@
 import React from 'react';
-import { Button, Modal, Placeholder } from 'semantic-ui-react';
+import { Button, Modal, Placeholder, Card, Icon, Image, Popup } from 'semantic-ui-react';
+import PieChart from 'react-minimal-pie-chart';
 import { colors } from '@atlaskit/theme';
+import {formatDate, getImageNameToPlatformNames, getImageUrl, getRatingColor} from "../../utils";
+import {PLATFORM_IMAGE_NAME_TO_COLOR} from "../../constants";
 
 const PlaceholderExample = () => (
     <Placeholder style={{width: "100%"}}>
@@ -62,11 +65,15 @@ function getStyle(provided, style) {
 // Need to be super sure we are not relying on PureComponent here for
 // things we should be doing in the selector as we do not know if consumers
 // will be using PureComponent
-function Item({ data, isDragging, isGroupedOver, provided, style, isClone, index, disabled }) {
-    const placeholderStyle = {width: "100%"};
+function Item({ data, isDragging, provided, style, index, disabled }) {
+    const placeholderStyle = {};
     if (disabled) {
         placeholderStyle.animation = "none";
     }
+
+    const {id, name, summary, total_rating, isPlaceholder, cover, colors: itemColors, first_release_date, platforms} = data;
+    const imageNameToPlatformNames = getImageNameToPlatformNames(platforms);
+
     return (
         <div
             className="item-container"
@@ -75,51 +82,85 @@ function Item({ data, isDragging, isGroupedOver, provided, style, isClone, index
             {...provided.dragHandleProps}
             style={{
                 ...getStyle(provided, style),
-                color: colors.N900,
+                // color: colors.N900,
                 // borderColor: getBorderColor(isDragging, data.author.colors),
                 // boxShadow: isDragging ? `2px 2px 1px ${colors.N70}` : 'none',
-                backgroundColor: getBackgroundColor(isDragging, isGroupedOver, data.colors)
+                // backgroundColor: getBackgroundColor(isDragging, isGroupedOver, itemColors)
             }}
             data-is-dragging={isDragging}
-            data-testid={data.id}
+            data-testid={id}
             data-index={index}
             // aria-label={`${data.author.name} quote ${data.content}`}
             onClick={() => console.log("clicked")}
         >
             {
-                data.isPlaceholder
+                isPlaceholder
                     ? (
-                        <Placeholder style={placeholderStyle}>
-                            <Placeholder.Header image>
-                                <Placeholder.Line />
-                                <Placeholder.Line />
-                            </Placeholder.Header>
-                            <Placeholder.Paragraph>
-                                <Placeholder.Line length='medium' />
-                                <Placeholder.Line length='short' />
-                            </Placeholder.Paragraph>
-                        </Placeholder>
+                        <div style={{width: "100%", padding: "8px", backgroundColor: colors.background()}}>
+                            <Placeholder style={placeholderStyle} fluid>
+                                <Placeholder.Header image>
+                                    <Placeholder.Line />
+                                    <Placeholder.Line />
+                                </Placeholder.Header>
+                                <Placeholder.Paragraph>
+                                    <Placeholder.Line length='medium' />
+                                    <Placeholder.Line length='short' />
+                                </Placeholder.Paragraph>
+                            </Placeholder>
+                        </div>
                     )
                     : (
-                        <React.Fragment>
-                            <img className="avatar" src={data.coverImageUrl} alt={data.name} />
-                            {isClone ? <div className="clone-badge">Clone</div> : null}
-                            <div className="item-content">
-                                <div>{data.name}</div>
-                                <ModalExample title={data.name} />
-                                <div className="item-footer">
-                                    {/*<small*/}
-                                    {/*    className="author"*/}
-                                    {/*    style={{*/}
-                                    {/*        color: data.author.colors.hard,*/}
-                                    {/*        backgroundColor: data.author.colors.soft*/}
-                                    {/*    }}>*/}
-                                    {/*    {data.author.name}*/}
-                                    {/*</small>*/}
-                                    <small className="quote-id">{data.total_rating ? Math.round(data.total_rating) : null}</small>
-                                </div>
-                            </div>
-                        </React.Fragment>
+                        <Card fluid>
+                            <Card.Content>
+                                <Image src={getImageUrl(cover?.image_id, "cover_big")} size="tiny" floated="left" />
+                                <Card.Header>
+                                    {name}
+                                </Card.Header>
+                                <Card.Meta style={{display: "flex", justifyContent: "space-between"}}>
+                                    <div>
+                                        <div className='date' style={{marginBottom: "6px"}}>
+                                            {formatDate(first_release_date)}
+                                        </div>
+                                        {
+                                            Object.entries(imageNameToPlatformNames).map(([imageName, platformNames]) => (
+                                                <Popup
+                                                    trigger={<Icon name={imageName} size="large" color={PLATFORM_IMAGE_NAME_TO_COLOR[imageName]} />}
+                                                    content={platformNames.join(", ")}
+                                                    position="bottom center"
+                                                />
+                                            ))
+                                        }
+                                    </div>
+
+                                    <PieChart
+                                        animate
+                                        animationDuration={500}
+                                        animationEasing="ease-out"
+                                        data={[{ color: getRatingColor(total_rating), value: Math.round(total_rating) }]}
+                                        label
+                                        labelPosition={0}
+                                        labelStyle={{ fontFamily: 'sans-serif', fontSize: '24px' }}
+                                        lengthAngle={360}
+                                        lineWidth={16}
+                                        paddingAngle={0}
+                                        radius={50}
+                                        rounded
+                                        startAngle={270}
+                                        totalValue={100}
+                                        style={{width: "80px", height: "80px"}}
+                                    />
+                                </Card.Meta>
+                                <Card.Description>
+
+                                </Card.Description>
+                            </Card.Content>
+                            {/*<Card.Content extra>*/}
+                            {/*    <a>*/}
+                            {/*        <Icon name='user' />*/}
+                            {/*        22 Friends*/}
+                            {/*    </a>*/}
+                            {/*</Card.Content>*/}
+                        </Card>
                     )
             }
         </div>

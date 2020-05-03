@@ -53,6 +53,15 @@ function App() {
 
             getGames(allGameIds).then((games) => {
 
+                if (!games) {
+                    setBacklogData({
+                        [BACKLOG_COLUMN_TYPE.TO_DO]: [],
+                        [BACKLOG_COLUMN_TYPE.IN_PROGRESS]: [],
+                        [BACKLOG_COLUMN_TYPE.DONE]: []
+                    });
+                    return;
+                }
+
                 const gameIdToGameMap = games.reduce((acc, {id, ...rest}) => {
                     acc[id] = rest;
                     return acc;
@@ -65,7 +74,6 @@ function App() {
                         return {
                             id: `${gameId}`,
                             ...game,
-                            coverImageUrl: getImageUrl(game.cover?.image_id),
                             colors: { soft: colors.Y50, hard: colors.N400A }
                         };
                     });
@@ -113,7 +121,6 @@ function App() {
         const newEntry = {
             ...result,
             id: `${result.id}`,
-            coverImageUrl: getImageUrl(result.cover?.image_id),
             colors: { soft: colors.Y50, hard: colors.N400A }
         };
         setBacklogData({ ...backlogData, [BACKLOG_COLUMN_TYPE.TO_DO]: [newEntry, ...backlogData[BACKLOG_COLUMN_TYPE.TO_DO]] })
