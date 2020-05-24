@@ -1,32 +1,10 @@
 import React from 'react';
-import { Button, Modal, Placeholder, Card, Icon, Image, Popup } from 'semantic-ui-react';
+import { Placeholder, Card, Image } from 'semantic-ui-react';
 import PieChart from 'react-minimal-pie-chart';
 import { colors } from '@atlaskit/theme';
-import {formatDate, getImageNameToPlatformNames, getImageUrl, getRatingColor} from "../../utils";
-import {PLATFORM_IMAGE_NAME_TO_COLOR} from "../../constants";
-
-const PlaceholderExample = () => (
-    <Placeholder style={{width: "100%"}}>
-        <Placeholder.Header image>
-            <Placeholder.Line />
-            <Placeholder.Line />
-        </Placeholder.Header>
-        <Placeholder.Paragraph>
-            <Placeholder.Line />
-            <Placeholder.Line />
-            <Placeholder.Line />
-        </Placeholder.Paragraph>
-    </Placeholder>
-);
-
-const ModalExample = ({title}) => (
-    <Modal trigger={<Button>See Details</Button>}>
-        <Modal.Header>{title}</Modal.Header>
-        <Modal.Content image>
-            <PlaceholderExample />
-        </Modal.Content>
-    </Modal>
-)
+import ItemModal from "./ItemModal";
+import {formatDate, getImageUrl, getRatingColor} from "../../utils";
+import PlatformIcons from "./PlatformIcons";
 
 const getBackgroundColor = (
     isDragging,
@@ -72,7 +50,6 @@ function Item({ data, isDragging, provided, style, index, disabled }) {
     }
 
     const {id, name, summary, total_rating, isPlaceholder, cover, colors: itemColors, first_release_date, platforms} = data;
-    const imageNameToPlatformNames = getImageNameToPlatformNames(platforms);
 
     return (
         <div
@@ -91,7 +68,6 @@ function Item({ data, isDragging, provided, style, index, disabled }) {
             data-testid={id}
             data-index={index}
             // aria-label={`${data.author.name} quote ${data.content}`}
-            onClick={() => console.log("clicked")}
         >
             {
                 isPlaceholder
@@ -112,24 +88,18 @@ function Item({ data, isDragging, provided, style, index, disabled }) {
                     : (
                         <Card fluid>
                             <Card.Content>
-                                <Image src={getImageUrl(cover?.image_id, "cover_big")} size="tiny" floated="left" />
+                                <Image src={getImageUrl(cover?.image_id)} size="tiny" floated="left" />
                                 <Card.Header>
-                                    {name}
+                                    <ItemModal trigger={<a>{name}</a>} data={data} />
                                 </Card.Header>
                                 <Card.Meta style={{display: "flex", justifyContent: "space-between"}}>
                                     <div>
                                         <div className='date' style={{marginBottom: "6px"}}>
                                             {formatDate(first_release_date)}
                                         </div>
-                                        {
-                                            Object.entries(imageNameToPlatformNames).map(([imageName, platformNames]) => (
-                                                <Popup
-                                                    trigger={<Icon name={imageName} size="large" color={PLATFORM_IMAGE_NAME_TO_COLOR[imageName]} />}
-                                                    content={platformNames.join(", ")}
-                                                    position="bottom center"
-                                                />
-                                            ))
-                                        }
+                                        <div style={{marginBottom: "6px"}}>
+                                            <PlatformIcons platforms={platforms} popupPosition="bottom center" />
+                                        </div>
                                     </div>
 
                                     <PieChart
