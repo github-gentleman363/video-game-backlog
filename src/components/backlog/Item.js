@@ -90,7 +90,8 @@ function Item({ data, isDragging, provided, style, index, disabled }) {
                             <Card.Content>
                                 <Image src={getImageUrl(cover?.image_id)} size="tiny" floated="left" />
                                 <Card.Header>
-                                    <ItemModal trigger={<a>{name}</a>} data={data} />
+                                    {/*<ItemModal trigger={<a>{name}</a>} data={data} />*/}
+                                    {name}
                                 </Card.Header>
                                 <Card.Meta style={{display: "flex", justifyContent: "space-between"}}>
                                     <div>
