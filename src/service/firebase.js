@@ -4,14 +4,15 @@ import "firebase/auth";
 import {BACKLOG_COLUMN_TYPE_DB_KEY_MAP} from "../constants";
 
 // Your web app's Firebase configuration
+// https://medium.com/@paulbreslin/is-it-safe-to-expose-your-firebase-api-key-to-the-public-7e5bd01e637b
 const firebaseConfig = Object.freeze({
-    apiKey: "AIzaSyDmup7TKympQ8oTicpq4I5mxWN8Y2sahPA",
-    authDomain: "video-game-backlog.firebaseapp.com",
-    databaseURL: "https://video-game-backlog.firebaseio.com",
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    databaseURL: process.env.REACT_APP_FIREBASE_DB_URL,
     projectId: "video-game-backlog",
-    storageBucket: "video-game-backlog.appspot.com",
-    messagingSenderId: "161569083282",
-    appId: "1:161569083282:web:2a9d48b9cbdeda88febb4b"
+    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_FIREBASE_APP_ID
 });
 
 // Initialize Firebase

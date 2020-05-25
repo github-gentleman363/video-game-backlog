@@ -14,7 +14,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  padding: 24px;
+  /*padding: 24px;*/
 }
 
 #root {

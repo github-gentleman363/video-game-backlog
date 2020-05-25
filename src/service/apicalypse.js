@@ -1,7 +1,5 @@
 import apicalypse from 'apicalypse';
 
-const API_KEY = "d07b3e3889ab72eaa8c31cec190f4384";
-
 const BASE_URL = "https://api-v3.igdb.com";
 
 const REQUEST_OPTIONS = Object.freeze({
@@ -11,7 +9,7 @@ const REQUEST_OPTIONS = Object.freeze({
     baseURL: `https://cors-anywhere.herokuapp.com/${BASE_URL}`,
     headers: {
         'Accept': 'application/json',
-        'user-key': API_KEY
+        'user-key': process.env.REACT_APP_IGDB_API_KEY
     },
     responseType: 'json',
     // timeout: 1000, // 1 second timeout
