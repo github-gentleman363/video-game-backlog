@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {Search, Image, Icon, Loader} from 'semantic-ui-react';
-import {searchGames} from "../service/apicalypse";
+import {searchGames} from "../service/igdb";
 import useDebounce from "../hooks/useDebounce";
 import {getImageUrl} from "../utils";
 import {LogInContext} from "../App";

@@ -2,10 +2,10 @@ import React from 'react';
 import { Placeholder, Card, Image } from 'semantic-ui-react';
 import PieChart from 'react-minimal-pie-chart';
 import { colors } from '@atlaskit/theme';
-import ItemModal from "./ItemModal";
 import {formatDate, getImageUrl, getRatingColor} from "../../utils";
 import PlatformIcons from "./PlatformIcons";
 
+// eslint-disable-next-line no-unused-vars
 const getBackgroundColor = (
     isDragging,
     isGroupedOver,
@@ -22,6 +22,7 @@ const getBackgroundColor = (
     return colors.N0;
 };
 
+// eslint-disable-next-line no-unused-vars
 const getBorderColor = (isDragging, authorColors) =>
     isDragging ? authorColors.hard : 'transparent';
 
@@ -49,7 +50,7 @@ function Item({ data, isDragging, provided, style, index, disabled }) {
         placeholderStyle.animation = "none";
     }
 
-    const {id, name, summary, total_rating, isPlaceholder, cover, colors: itemColors, first_release_date, platforms} = data;
+    const {id, name, total_rating, isPlaceholder, cover, first_release_date, platforms} = data;
 
     return (
         <div

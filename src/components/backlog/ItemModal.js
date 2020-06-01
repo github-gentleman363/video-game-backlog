@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Modal, Image, Divider, Header, Icon} from "semantic-ui-react";
+import {Modal, Image, Divider, Header, Icon} from "semantic-ui-react";
 import PieChart from 'react-minimal-pie-chart';
 import {formatDate, getImageUrl, getRatingColor} from "../../utils";
 import PlatformIcons from "./PlatformIcons";
